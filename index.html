@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080a0c" />
+  <title>ONE MORE BOUNCE — JumpZone After Hours</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+  </script>
+</head>
+<body>
+  <div id="game-root">
+    <canvas id="game-canvas" aria-label="One More Bounce 3D game"></canvas>
+    <div id="grain"></div>
+    <div id="vignette"></div>
+    <div id="letterbox-top"></div>
+    <div id="letterbox-bottom"></div>
+
+    <section id="title-screen" class="screen active">
+      <div class="title-content">
+        <div class="eyebrow"><span class="status-dot"></span> JUMPZONE FAMILY FUN CENTER · EST. 2009</div>
+        <h1>ONE MORE<br><em>BOUNCE</em></h1>
+        <p class="tagline">CLOSING TIME WAS TWO HOURS AGO.</p>
+        <div class="title-rule"></div>
+        <button id="new-game" class="primary-button">START NIGHT SHIFT <span>↗</span></button>
+        <button id="open-settings-title" class="text-button">SETTINGS</button>
+        <div class="title-foot"><span>AN INTERACTIVE NIGHTMARE</span><span>HEADPHONES RECOMMENDED</span></div>
+      </div>
+      <div class="title-stamp">STAFF<br>ONLY</div>
+    </section>
+
+    <section id="settings-screen" class="screen">
+      <div class="panel settings-panel">
+        <div class="eyebrow">SYSTEM CONFIGURATION</div>
+        <h2>SETTINGS</h2>
+        <label class="setting-row"><span>MOUSE SENSITIVITY</span><input id="sensitivity" type="range" min="0.3" max="2.2" step="0.1" value="1"><b id="sensitivity-value">1.0</b></label>
+        <label class="setting-row"><span>MASTER VOLUME</span><input id="volume" type="range" min="0" max="1" step="0.05" value="0.7"><b id="volume-value">70%</b></label>
+        <button id="close-settings" class="primary-button">BACK</button>
+      </div>
+    </section>
+
+    <section id="pause-screen" class="screen">
+      <div class="panel pause-panel">
+        <div class="eyebrow">SHIFT INTERRUPTED</div>
+        <h2>PAUSED</h2>
+        <button id="resume-game" class="primary-button">RETURN TO SHIFT <span>↗</span></button>
+        <button id="restart-game" class="text-button">RESTART NIGHT</button>
+      </div>
+    </section>
+
+    <section id="gameover-screen" class="screen">
+      <div class="panel result-panel">
+        <div class="eyebrow danger-eyebrow">EMPLOYEE INCIDENT REPORT · #0001</div>
+        <h2>SHIFT<br><em>TERMINATED</em></h2>
+        <p id="death-message">Something heard you.</p>
+        <button id="retry-game" class="primary-button">TRY AGAIN</button>
+      </div>
+    </section>
+
+    <section id="ending-screen" class="screen">
+      <div class="ending-content">
+        <div class="eyebrow">INCIDENT CLOSED · 04:17 AM</div>
+        <h2>YOU MADE IT<br><em>OUT.</em></h2>
+        <p>The parking lot is empty. The road is quiet. Your hands won't stop shaking.</p>
+        <p class="ending-sound">BOING.</p>
+        <div class="ending-final">ONE MORE BOUNCE</div>
+        <button id="play-again-ending" class="primary-button">PLAY AGAIN</button>
+        <div class="credits">A JUMPZONE AFTER-HOURS INCIDENT<br>THANK YOU FOR WORKING LATE.</div>
+      </div>
+    </section>
+
+    <section id="intro-card" class="cinematic-card">
+      <div class="eyebrow">11:48 PM · JUMPZONE</div>
+      <p>You said you'd only be here for twenty minutes.</p>
+      <span>THE FRONT DOOR LOCKS BEHIND YOU.</span>
+      <button id="begin-shift" class="primary-button">CLOCK IN</button>
+    </section>
+
+    <div id="hud" class="hud hidden">
+      <div class="hud-top">
+        <div class="objective-block"><div class="eyebrow">CURRENT TASK</div><div id="objective-text">Complete the closing checklist.</div><div id="objective-subtext">Find the electrical panel.</div></div>
+        <div class="time-block"><span>JUMPZONE</span><b id="clock">11:48 PM</b></div>
+      </div>
+      <div class="hud-bottom">
+        <div class="stamina-wrap"><span>STAMINA</span><div class="meter"><i id="stamina-fill"></i></div></div>
+        <div id="flashlight-status">▰ FLASHLIGHT ON</div>
+        <div id="noise-status" class="noise-status">QUIET</div>
+      </div>
+      <div id="crosshair"></div>
+      <div id="interaction-prompt"></div>
+      <div id="toast"></div>
+      <div id="center-message"></div>
+      <div id="hide-overlay"><div>HOLD STILL</div><span>It is listening.</span><small>PRESS E TO LEAVE HIDING</small></div>
+      <div id="heartbeat"></div>
+    </div>
+
+    <div id="puzzle-modal" class="modal hidden">
+      <div class="panel puzzle-panel">
+        <button id="close-puzzle" class="modal-close">×</button>
+        <div class="eyebrow" id="puzzle-eyebrow">MAINTENANCE</div>
+        <h2 id="puzzle-title">POWER ROUTING</h2>
+        <p id="puzzle-description">Connect the colored wires in the right order.</p>
+        <div id="puzzle-content"></div>
+        <div id="puzzle-feedback"></div>
+        <button id="submit-puzzle" class="primary-button">CONFIRM</button>
+      </div>
+    </div>
+
+    <div id="loading-screen" class="loading-screen"><div class="loader-mark">JZ</div><span>UNLOCKING THE BUILDING...</span><div class="loading-line"><i></i></div></div>
+    <div id="error-box" class="error-box hidden"></div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
